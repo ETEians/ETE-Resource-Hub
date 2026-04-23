@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IIUC ETE Resources Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #050d1a;
+      --surface: #0b1a2e;
+      --card: #0f2240;
+      --accent: #00c6ff;
+      --accent2: #0072ff;
+      --gold: #f7b731;
+      --text: #e8f0fe;
+      --muted: #7a94b8;
+      --border: rgba(0,198,255,0.15);
+      --radius: 16px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(5,13,26,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--accent), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 5% 80px;
+      position: relative;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(0,114,255,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,198,255,0.08);
+      border: 1px solid rgba(0,198,255,0.25);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      max-width: 560px;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.7s 0.2s ease both;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeUp 0.7s 0.3s ease both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.25s;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      color: #fff;
+      box-shadow: 0 8px 30px rgba(0,114,255,0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0,114,255,0.45);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(0,198,255,0.05);
+    }
+
+    /* STATS BAR */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      padding: 2rem 5%;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      animation: fadeUp 0.7s 0.4s ease both;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 80px 5%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      margin-bottom: 3rem;
+    }
+
+    .section-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-desc {
+      color: var(--muted);
+      max-width: 520px;
+      font-size: 0.95rem;
+    }
+
+    /* SEMESTER GRID */
+    .semester-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+
+    .semester-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .semester-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+      transform: scaleX(0);
+      transition: transform 0.3s;
+      transform-origin: left;
+    }
+
+    .semester-card:hover {
+      border-color: rgba(0,198,255,0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    }
+
+    .semester-card:hover::before { transform: scaleX(1); }
+
+    .sem-icon {
+      width: 44px; height: 44px;
+      background: rgba(0,114,255,0.12);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+
+    .sem-number {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .sem-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .sem-link {
+      margin-top: auto;
+      font-size: 0.78rem;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500;
+    }
+
+    /* FACULTY GRID */
+    .faculty-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .faculty-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s;
+    }
+
+    .faculty-card:hover {
+      border-color: rgba(0,198,255,0.35);
+      transform: translateY(-3px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+    }
+
+    .faculty-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #fff;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .faculty-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .faculty-info { flex: 1; }
+
+    .faculty-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .faculty-role {
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    .faculty-email {
+      font-size: 0.72rem;
+      color: var(--muted);
+      word-break: break-all;
+    }
+
+    .faculty-link {
+      margin-top: 8px;
+      font-size: 0.72rem;
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    /* FB GRID */
+    .fb-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .fb-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fb-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #1877f2, #42b0ff);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .fb-card:hover {
+      border-color: rgba(24,119,242,0.45);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    }
+
+    .fb-card:hover::after { opacity: 1; }
+
+    .fb-icon-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .fb-icon {
+      width: 42px; height: 42px;
+      background: #1877f2;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .fb-icon svg {
+      width: 22px; height: 22px;
+      fill: #fff;
+    }
+
+    .fb-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .fb-summary {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .fb-visit {
+      margin-top: auto;
+      font-size: 0.78rem;
+      color: #42b0ff;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 3rem 5%;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .footer-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    /* DIVIDER */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0 5%;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .animate-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+
+    /* RESOURCE FOLDER CARDS */
+    .resource-folder-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .resource-folder-card {
+      background: linear-gradient(135deg, rgba(247,183,49,0.08), rgba(0,114,255,0.05));
+      border: 1px solid rgba(247,183,49,0.25);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      transition: all 0.3s;
+    }
+
+    .resource-folder-card:hover {
+      border-color: rgba(247,183,49,0.55);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(247,183,49,0.1);
+    }
+
+    .res-icon {
+      font-size: 1.8rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .res-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .res-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 6px;
+    }
+
+    .res-link {
+      font-size: 0.78rem;
+      color: var(--gold);
+      font-weight: 500;
+    }
+
+    /* ADMISSION SECTION */
+    .admission-hero {
+      background: linear-gradient(135deg, rgba(0,114,255,0.12), rgba(0,198,255,0.06));
+      border: 1px solid rgba(0,198,255,0.2);
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .admission-hero-text h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .admission-hero-text p {
+      color: var(--muted);
+      font-size: 0.88rem;
+      max-width: 400px;
+    }
+
+    .fees-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .fee-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+    }
+
+    .fee-card-title {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .fee-amount {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+
+    .fee-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .fee-table-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    .fee-table-header {
+      padding: 1rem 1.5rem;
+      background: rgba(0,114,255,0.1);
+      border-bottom: 1px solid var(--border);
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .fee-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    .fee-table th {
+      text-align: left;
+      padding: 0.75rem 1.5rem;
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .fee-table td {
+      padding: 0.75rem 1.5rem;
+      border-bottom: 1px solid rgba(0,198,255,0.06);
+      color: var(--text);
+    }
+
+    .fee-table tr:last-child td { border-bottom: none; }
+
+    .fee-table tr:hover td { background: rgba(0,198,255,0.03); }
+
+    .fee-table .total-row td {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      color: var(--accent);
+      border-top: 1px solid var(--border);
+    }
+
+    .admit-info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .admit-info-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+
+    .admit-info-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .admit-info-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--card); border-radius: 3px; }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .stats-bar { gap: 1.5rem; }
+      .hero h1 { letter-spacing: -1px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">IIUC · ETE Hub</div>
+  <ul class="nav-links">
+    <li><a href="#notes">Study Notes</a></li>
+    <li><a href="#iiucnet">IIUC Network</a></li>
+    <li><a href="#faculty">Faculty</a></li>
+    <li><a href="#admission">Admission & Fees</a></li>
+    <li><a href="#community">Community</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge">Electronic & Telecommunication Engineering</div>
+  <h1>Your Complete<br/><span>ETE Resource Hub</span></h1>
+  <p>Everything you need for IIUC's ETE Department — semester notes, faculty directory, and community links — all in one place.</p>
+  <div class="hero-cta">
+    <a href="#notes" class="btn btn-primary">📚 Browse Notes</a>
+    <a href="https://www.iiuc.ac.bd/web/fse/ete" target="_blank" class="btn btn-outline">🏫 Official Dept. Site</a>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar animate-in">
+  <div class="stat-item">
+    <div class="stat-num">8</div>
+    <div class="stat-label">Semesters</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">12+</div>
+    <div class="stat-label">Faculty Members</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">6</div>
+    <div class="stat-label">Community Pages</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">IIUC</div>
+    <div class="stat-label">Chittagong</div>
+  </div>
+</div>
+
+<!-- NOTES SECTION -->
+<section id="notes">
+  <div class="section-header animate-in">
+    <div class="section-tag">📂 Google Drive</div>
+    <div class="section-title">ETE Study Resources</div>
+    <div class="section-desc">All study materials organized by category and semester — notes, previous questions, requirements and logos. Curated by Diganta.</div>
+  </div>
+
+  <!-- Main Resource Folders -->
+  <div style="margin-bottom:2.5rem;">
+    <div style="font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">📁 Main Folders</div>
+    <div class="resource-folder-grid">
+
+      <a class="resource-folder-card animate-in" href="https://drive.google.com/drive/folders/16v9trM_HJbVuwmVupP_WljomgFghy6pK?usp=drive_link" target="_blank">
+        <div class="res-icon">📝</div>
+        <div>
+          <div class="res-name">Previous Questions</div>
+          <div class="res-desc">Past exam question papers from previous semesters — essential for exam preparation and understanding question patterns.</div>
+          <div class="res-link">Open Folder →</div>
+        </div>
+      </a>
+
+      <a class="resource-folder-card animate-in" href="https://drive.google.com/drive/folders/1C3jrt5qQyzdeQl3Oi4tUktFZsXYOkrgf?usp=drive_link" target="_blank">
+        <div class="res-icon">📋</div>
+        <div>
+          <div class="res-name">Requirements</div>
+          <div class="res-desc">Course requirements, lab report guidelines, project documentation and departmental requirement sheets.</div>
+          <div class="res-link">Open Folder →</div>
+        </div>
+      </a>
+
+      <a class="resource-folder-card animate-in" href="https://drive.google.com/drive/folders/1jvHo53hOtGZ0ogzYlEzo-C7ze5dsfFyA?usp=drive_link" target="_blank">
+        <div class="res-icon">🖼️</div>
+        <div>
+          <div class="res-name">ETE Logos</div>
+          <div class="res-desc">Official logos and branding assets for IIUC ETE Department, clubs and societies in various high-quality formats.</div>
+          <div class="res-link">Open Folder →</div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- Semester Folders -->
+  <div>
+    <div style="font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;">📚 Semester Notes (1–8)</div>
+    <div class="semester-grid">
+
+      <a class="semester-card animate-in" href="https://drive.google.com/drive/folders/1XLEGU5K_YunGsixAPLJoChJFX9wEogJc?usp=drive_link" target="_blank">
+        <div class="sem-icon">📘</div>
+        <div class="sem-number">1st Semester</div>
+        <div class="sem-desc">Engineering Drawing, Electrical Circuit I (DC), Mathematics-I, Physics I, Advanced English & Ethics.</div>
+        <div class="sem-link">Open Folder →</div>
+      </a>
+
+      <a class="semester-card animate-in" href="https://drive.google.com/drive/folders/1ogsDxg8WS47not13fs1e42wmMLOfZ_fW?usp=drive_link" target="_blank">
+        <div class="sem-icon">📗</div>
+        <div class="sem-number">2nd Semester</div>
+        <div class="sem-desc">Circuit analysis, Electronic devices, Programming basics and Applied Mathematics for engineers.</div>
+        <div class="sem-link">Open Folder →</div>
+      </a>
+
+      <a class="semester-card animate-in" href="https://drive.google.com/drive/folders/12rgq5DWrccTEjVWnQKCTmiSSeoHsO_MN?usp=drive_link" target="_blank">
+        <div class="sem-icon">📙</div>
+        <div class="sem-number">3rd Semester</div>
+        <div class="sem-desc">Signals & Systems, Digital Electronics, Data Structures and Electromagnetic Theory.</div>
+        <div class="sem-link">Open Folder →</div>
+      </a>
+
+      <a class="semester-card animate-in" href="https://drive.google.com/drive/folders/1sbs3JFjHkf0xKoAkPnX7cGS9jcC508Re?usp=drive_link" target="_blank">
+        <div class="sem-icon">📕</div>
+        <div class="sem-number">4th Semester</div>
+        <div class="sem-desc">Communication Theory, Microprocessors, Analog Electronics and Computer Organization.</div>
+        <div class="sem-link">Open Folder →</div>
+      </a>
+
+      <a class="semester-card animate-in" href="https://drive.google.com/drive/folders/1afzV0ExW4uA8iLBvfjWa09l1JL8dkXPJ?usp=drive_link" target="_blank">
+        <div class="sem-icon">📓</div>
+        <div class="sem-number">5th Semester</div>
+        <div class="sem-desc">Digital Communications, Microwave Engineering, VLSI Design and Control Systems.</div>
+        <div class="sem-link">Open Folder →</div>
+      </a>
+
+      <a class="semester-card animate-in" href="https://drive.google.com/drive/folders/1aFeukGuePP8wySTEj-_jLKeXhM7qNVlH?usp=drive_link" target="_blank">
+        <div class="sem-icon">📒</div>
+        <div class="sem-number">6th Semester</div>
+        <div class="sem-desc">Wireless Communications, Optical Fiber, Antenna Design and Embedded Systems.</div>
+        <div class="sem-link">Open Folder →</div>
+      </a>
+
+      <a class="semester-card animate-in" href="https://drive.google.com/drive/folders/153SqxQ81HxlrOnKkVSerRYElrTeQmQbw?usp=drive_link" target="_blank">
+        <div class="sem-icon">📔</div>
+        <div class="sem-number">7th Semester</div>
+        <div class="sem-desc">Mobile Communications, Network Security, Satellite Communications and Signal Processing.</div>
+        <div class="sem-link">Open Folder →</div>
+      </a>
+
+      <a class="semester-card animate-in" href="https://drive.google.com/drive/folders/1q-6ybqUBU__ivQtqeOIEkMb4yLcxw5Wx?usp=drive_link" target="_blank">
+        <div class="sem-icon">🎓</div>
+        <div class="sem-number">8th Semester</div>
+        <div class="sem-desc">Thesis / Project work, Advanced Telecommunications, Elective courses and Final year seminars.</div>
+        <div class="sem-link">Open Folder →</div>
+      </a>
+
+    </div>
+  </div>
+
+  <div style="margin-top:2rem; text-align:center;">
+    <a href="https://drive.google.com/drive/folders/1_tte-oCcMgQjo9uFe8sDyPwIHDPEIii-" target="_blank" class="btn btn-primary">
+      📁 Open Full Drive Folder
+    </a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- IIUC NETWORK SECTION -->
+<section id="iiucnet">
+  <div class="section-header animate-in">
+    <div class="section-tag">🌐 IIUC Resources</div>
+    <div class="section-title">IIUC Network</div>
+    <div class="section-desc">A one-stop platform with all tools, apps, bots, and resources built by and for IIUC students — important for every IIUC student.</div>
+  </div>
+
+  <a class="resource-folder-card animate-in" href="https://iiuc.net/" target="_blank" style="display:flex;align-items:flex-start;gap:1.25rem;max-width:700px;background:linear-gradient(135deg,rgba(0,198,255,0.08),rgba(0,114,255,0.05));border:1px solid rgba(0,198,255,0.3);border-radius:16px;padding:2rem;text-decoration:none;color:inherit;transition:all 0.3s;margin-bottom:2rem;">
+    <div style="font-size:2.5rem;flex-shrink:0;">🔗</div>
+    <div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:var(--accent);margin-bottom:0.5rem;">iiuc.net</div>
+      <div style="font-size:0.85rem;color:var(--muted);line-height:1.7;margin-bottom:0.75rem;">
+        IIUC Network হলো IIUC-এর সকল শিক্ষার্থীর জন্য একটি গুরুত্বপূর্ণ প্ল্যাটফর্ম। এখানে পাবে IIUC-কেন্দ্রিক সব ধরনের <strong style="color:var(--text);">Tools, Apps, Bots ও Resources</strong> — যা IIUC শিক্ষার্থীরাই তৈরি করেছে। রুটিন চেক, রেজাল্ট, নোটিশ থেকে শুরু করে বিভিন্ন ক্যাটাগরির ইউনিভার্সিটি-সংক্রান্ত সব কিছু এক জায়গায়।
+      </div>
+      <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:0.78rem;color:var(--muted);">
+          <span style="color:var(--accent);">✦</span> 4টি ক্যাটাগরিতে সাজানো রিসোর্স
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:0.78rem;color:var(--muted);">
+          <span style="color:var(--gold);">✦</span> সবসময় আপডেট হচ্ছে
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:0.78rem;color:var(--muted);">
+          <span style="color:#e91e63;">✦</span> IIUC শিক্ষার্থীদের জন্য তৈরি
+        </div>
+      </div>
+      <div style="font-size:0.82rem;font-weight:600;color:var(--accent);">Visit iiuc.net →</div>
+    </div>
+  </a>
+
+  <div style="background:rgba(247,183,49,0.06);border:1px solid rgba(247,183,49,0.2);border-radius:12px;padding:1.25rem 1.5rem;display:flex;align-items:center;gap:0.75rem;">
+    <span style="font-size:1.2rem;">💡</span>
+    <p style="font-size:0.82rem;color:var(--muted);margin:0;line-height:1.6;">
+      তুমি যদি IIUC-এর জন্য কোনো Tool, App বা Resource বানিয়ে থাকো — <a href="https://iiuc.net/add.html" target="_blank" style="color:var(--gold);text-decoration:none;font-weight:600;">iiuc.net-এ সাবমিট করো</a> এবং পুরো IIUC কমিউনিটির সাথে শেয়ার করো।
+    </p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ADMISSION & FEES SECTION -->
+<section id="admission">
+  <div class="section-header animate-in">
+    <div class="section-tag">🎓 Admissions</div>
+    <div class="section-title">Admission & Program Fees</div>
+    <div class="section-desc">B.Sc in Electronic & Telecommunication Engineering — a 4-year (8 semester) program. Here's everything you need to know before applying.</div>
+  </div>
+
+  <!-- Apply CTA Banner -->
+  <div class="admission-hero animate-in">
+    <div class="admission-hero-text">
+      <h3>Ready to Join ETE at IIUC?</h3>
+      <p>Applications are accepted twice a year — Spring (Jan–Jun) and Autumn (Jul–Dec). Apply online through the official IIUC portal.</p>
+    </div>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;flex-shrink:0;">
+      <a href="https://web.iiuc.ac.bd/home/apply-online" target="_blank" class="btn btn-primary">🖊️ Apply Online Now</a>
+      <a href="https://web.iiuc.ac.bd/program/ete" target="_blank" class="btn btn-outline">📄 Full Program Details</a>
+    </div>
+  </div>
+
+  <!-- Admission Requirements -->
+  <div style="margin-bottom:2rem;">
+    <div style="font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">📋 Admission Requirements</div>
+    <div class="admit-info-grid">
+      <div class="admit-info-card animate-in">
+        <div class="admit-info-label">For SSC/HSC Students</div>
+        <div class="admit-info-value" style="font-size:0.85rem;line-height:1.5;">Total GPA 6.50 in SSC &amp; HSC combined, minimum GPA 3.00 in each. Physics &amp; Mathematics pass required.</div>
+      </div>
+      <div class="admit-info-card animate-in">
+        <div class="admit-info-label">For O/A Level Students</div>
+        <div class="admit-info-value" style="font-size:0.85rem;line-height:1.5;">Min. 5 O-Level subjects, 2 A-Level subjects. B grade in 4 subjects, C grade in 3. Physics &amp; Math mandatory.</div>
+      </div>
+      <div class="admit-info-card animate-in">
+        <div class="admit-info-label">Program Duration</div>
+        <div class="admit-info-value">4 Years / 8 Semesters</div>
+      </div>
+      <div class="admit-info-card animate-in">
+        <div class="admit-info-label">Minimum CGPA to Graduate</div>
+        <div class="admit-info-value">2.50 CGPA</div>
+      </div>
+      <div class="admit-info-card animate-in">
+        <div class="admit-info-label">Admission Test Marks</div>
+        <div class="admit-info-value" style="font-size:0.85rem;">Physics 25 · Math 30 · Chemistry 15 · English 15 · GK 15 · Viva 10 · GPA 10 = 120</div>
+      </div>
+      <div class="admit-info-card animate-in">
+        <div class="admit-info-label">Intake Per Year</div>
+        <div class="admit-info-value">Spring + Autumn Semesters</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;">
+    <a href="https://web.iiuc.ac.bd/program/ete" target="_blank" class="btn btn-outline" style="margin-right:0.75rem;">📖 View Full Program Info</a>
+    <a href="https://web.iiuc.ac.bd/program/program-fees" target="_blank" class="btn btn-outline">💳 All Program Fees</a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FACULTY SECTION -->
+<section id="faculty">
+  <div class="section-header animate-in">
+    <div class="section-tag">👨‍🏫 Department</div>
+    <div class="section-title">Faculty of ETE</div>
+    <div class="section-desc">Meet the dedicated faculty members of the Electronic and Telecommunication Engineering Department at IIUC.</div>
+  </div>
+
+  <div class="faculty-grid">
+
+    <a class="faculty-card animate-in" href="https://www.iiuc.ac.bd/web/fse/ete/faculty-and-staff/teacher/2334" target="_blank">
+      <div class="faculty-avatar">MJ</div>
+      <div class="faculty-info">
+        <div class="faculty-name">Mohammed Jashim Uddin</div>
+        <div class="faculty-role">Associate Professor & Chairman</div>
+        <div class="faculty-email">Dept. of ETE, IIUC</div>
+        <div class="faculty-link">View Profile →</div>
+      </div>
+    </a>
+
+    <a class="faculty-card animate-in" href="https://www.iiuc.ac.bd/web/fse/ete/faculty-and-staff/teacher/2147" target="_blank">
+      <div class="faculty-avatar">AG</div>
+      <div class="faculty-info">
+        <div class="faculty-name">Dr. Engr. Abdul Gafur</div>
+        <div class="faculty-role">Associate Professor</div>
+        <div class="faculty-email">engr.abdul.gafur@gmail.com</div>
+        <div class="faculty-link">View Profile →</div>
+      </div>
+    </a>
+
+    <!-- Placeholder cards for other faculty visible on site -->
+    <a class="faculty-card animate-in" href="https://www.iiuc.ac.bd/web/fse/ete/faculty-and-staff" target="_blank">
+      <div class="faculty-avatar" style="background: linear-gradient(135deg,#f7b731,#f0541e);">AP</div>
+      <div class="faculty-info">
+        <div class="faculty-name">Assistant Professors</div>
+        <div class="faculty-role">Assistant Professor</div>
+        <div class="faculty-email">Multiple faculty members</div>
+        <div class="faculty-link">View All →</div>
+      </div>
+    </a>
+
+    <a class="faculty-card animate-in" href="https://www.iiuc.ac.bd/web/fse/ete/faculty-and-staff" target="_blank">
+      <div class="faculty-avatar" style="background: linear-gradient(135deg,#11998e,#38ef7d);">LT</div>
+      <div class="faculty-info">
+        <div class="faculty-name">Lecturers</div>
+        <div class="faculty-role">Lecturer</div>
+        <div class="faculty-email">Multiple lecturers</div>
+        <div class="faculty-link">View All →</div>
+      </div>
+    </a>
+
+  </div>
+
+  <div style="margin-top:2rem; text-align:center;">
+    <a href="https://www.iiuc.ac.bd/web/fse/ete/faculty-and-staff" target="_blank" class="btn btn-outline">
+      👥 View Full Faculty Directory
+    </a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- COMMUNITY / FACEBOOK SECTION -->
+<section id="community">
+  <div class="section-header animate-in">
+    <div class="section-tag">🌐 Community</div>
+    <div class="section-title">ETE Facebook Pages</div>
+    <div class="section-desc">Stay connected with the IIUC ETE community through official Facebook pages for updates, events, and networking.</div>
+  </div>
+
+  <div class="fb-grid">
+
+    <a class="fb-card animate-in" href="https://www.facebook.com/ETEIIUC?mibextid=ZbWKwL" target="_blank">
+      <div class="fb-icon-row">
+        <div class="fb-icon">
+          <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </div>
+        <div class="fb-name">IIUC ETE Department</div>
+      </div>
+      <div class="fb-summary">The official Facebook page of the ETE Department at IIUC. Follow for department notices, academic updates, and announcements.</div>
+      <div class="fb-visit">Visit Page →</div>
+    </a>
+
+    <a class="fb-card animate-in" href="https://www.facebook.com/IIUCTelecomClub?mibextid=ZbWKwL" target="_blank">
+      <div class="fb-icon-row">
+        <div class="fb-icon">
+          <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </div>
+        <div class="fb-name">IIUC ETE Club</div>
+      </div>
+      <div class="fb-summary">The telecom club of ETE IIUC — a student-driven platform for tech talks, workshops, networking events, and skill development activities.</div>
+      <div class="fb-visit">Visit Page →</div>
+    </a>
+
+    <a class="fb-card animate-in" href="https://www.facebook.com/ete.ers?mibextid=ZbWKwL" target="_blank">
+      <div class="fb-icon-row">
+        <div class="fb-icon" style="background:#e91e63;">
+          <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </div>
+        <div class="fb-name">ETE Electronics & Robotics Society</div>
+      </div>
+      <div class="fb-summary">Dedicated to electronics and robotics innovation at IIUC ETE. Organizes competitions, project showcases, and hands-on robotics workshops.</div>
+      <div class="fb-visit">Visit Page →</div>
+    </a>
+
+    <a class="fb-card animate-in" href="https://www.facebook.com/etersiiuc?mibextid=ZbWKwL" target="_blank">
+      <div class="fb-icon-row">
+        <div class="fb-icon" style="background:#673ab7;">
+          <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </div>
+        <div class="fb-name">IIUC ETE Research Society</div>
+      </div>
+      <div class="fb-summary">Promoting research culture among ETE students at IIUC. Focuses on academic research, paper publications, seminars, and collaborative projects.</div>
+      <div class="fb-visit">Visit Page →</div>
+    </a>
+
+    <a class="fb-card animate-in" href="https://www.facebook.com/iiucetecareerforum?mibextid=ZbWKwL" target="_blank">
+      <div class="fb-icon-row">
+        <div class="fb-icon" style="background:#00897b;">
+          <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </div>
+        <div class="fb-name">IIUC ETE Career Forum</div>
+      </div>
+      <div class="fb-summary">A platform for career guidance, job opportunities, internship postings, and professional development resources tailored for ETE graduates and students.</div>
+      <div class="fb-visit">Visit Page →</div>
+    </a>
+
+    <a class="fb-card animate-in" href="https://www.facebook.com/share/14ZLv134nkN/" target="_blank">
+      <div class="fb-icon-row">
+        <div class="fb-icon" style="background:#0a7c50;">
+          <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </div>
+        <div class="fb-name">ETE Programming Society</div>
+      </div>
+      <div class="fb-summary">A student-driven programming community of IIUC ETE — focused on competitive programming, coding challenges, workshops, and software development skills.</div>
+      <div class="fb-visit">Visit Page →</div>
+    </a>
+
+  </div>
+</section>
+<footer>
+  <div class="footer-logo">IIUC · ETE Hub</div>
+  <p style="margin-bottom:0.5rem;">Department of Electronic & Telecommunication Engineering</p>
+  <p>International Islamic University Chittagong (IIUC)</p>
+  <p style="margin-top:1rem;">
+    <a href="https://www.iiuc.ac.bd/web/fse/ete" target="_blank">Official Website</a>
+    &nbsp;·&nbsp;
+    <a href="https://drive.google.com/drive/folders/1_tte-oCcMgQjo9uFe8sDyPwIHDPEIii-" target="_blank">Study Resources</a>
+    &nbsp;·&nbsp;
+    <a href="https://www.facebook.com/ETEIIUC?mibextid=ZbWKwL" target="_blank">Facebook</a>
+  </p>
+  <p style="margin-top:1.5rem; font-size:0.72rem; color:#3d5a80;">
+    This is a student resource hub. All official information belongs to IIUC.
+  </p>
+</footer>
+
+<script>
+  // Intersection Observer for animate-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.animate-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
